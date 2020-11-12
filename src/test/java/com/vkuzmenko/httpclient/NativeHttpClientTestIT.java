@@ -22,7 +22,7 @@ public class NativeHttpClientTestIT {
   }
 
   @Test
-  public void sendRequest() throws JsonProcessingException {
+  public void sendRequestAsString() throws JsonProcessingException {
     Map<String, String> headers = new HashMap<>();
     headers.put("Content-type", "application/json; charset=UTF-8");
 
@@ -52,6 +52,36 @@ public class NativeHttpClientTestIT {
     assertThat(json.get("body").asText()).isEqualTo("body test");
     assertThat(json.get("userId").asText()).isEqualTo("1");
   }
+
+  @Test
+  public void sendRequestAsObject() {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("Content-type", "application/json; charset=UTF-8");
+
+    Post post = new Post();
+    post.setUserId(1);
+    post.setTitle("title test");
+    post.setBody("body test");
+
+    Request request = Request.builder()
+        .url("https://jsonplaceholder.typicode.com/posts")
+        .method(Method.POST)
+        .body(post)
+        .headers(headers)
+        .build();
+
+    Executor executor = httpClient.create(request);
+    Response response = executor.execute();
+    JsonNode json = response.body().json();
+
+    assertThat(response.statusCode()).isEqualTo(201);
+    assertThat(response.headers()).containsEntry("Content-Type", "application/json; charset=utf-8");
+    assertThat(json.get("id").asText()).isEqualTo("101");
+    assertThat(json.get("title").asText()).isEqualTo("title test");
+    assertThat(json.get("body").asText()).isEqualTo("body test");
+    assertThat(json.get("userId").asText()).isEqualTo("1");
+  }
+
 
   @Test
   public void putRequest() throws JsonProcessingException {

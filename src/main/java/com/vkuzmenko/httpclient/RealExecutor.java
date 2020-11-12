@@ -3,9 +3,7 @@ package com.vkuzmenko.httpclient;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 
-import com.vkuzmenko.httpclient.exceptions.UrlNotFoundException;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -61,6 +59,7 @@ public class RealExecutor implements Executor {
      // throw new UrlNotFoundException(e.getMessage(), e.getCause());
 
     } catch (URISyntaxException | IOException e) {
+      // TODO handle logging
       e.printStackTrace();
     }
 

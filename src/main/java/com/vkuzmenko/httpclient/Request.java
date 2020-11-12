@@ -1,5 +1,7 @@
 package com.vkuzmenko.httpclient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +39,11 @@ public class Request {
       return this;
     }
 
+    public <T> Builder body(T body) {
+      Request.this.body = parseObjectToJson(body);
+      return this;
+    }
+
     public Builder headers(Map<String, String> headers) {
       Request.this.headers = headers;
       return this;
@@ -44,6 +51,16 @@ public class Request {
 
     public Request build() {
       return Request.this;
+    }
+
+    private <T> String parseObjectToJson(T body) {
+      try {
+        return new ObjectMapper().writeValueAsString(body);
+      } catch (JsonProcessingException e) {
+        // TODO handle logging
+        e.printStackTrace();
+      }
+      return Constants.EMPTY;
     }
   }
 
